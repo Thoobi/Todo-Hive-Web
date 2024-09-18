@@ -58,7 +58,7 @@ const Loginscreen = () => {
 
     return (
         <div id="him" className='flex flex-row justify-between h-full w-full font-urbanist max-md:bg-cover' >
-            <ToastContainer position='top-right' />
+            <ToastContainer position='top-right font-urbanist' />
             <div className='bg-cover w-[40%] max-lg:w-[35%] flex flex-col justify-center items-center max-md:hidden' style={{ backgroundImage: `url(${background})`, height: "100vh" }}>
                 <img src={art1} alt=" the logo for the todo hive project" className='absolute top-0 left-0' />
                 <img src={logo} alt=" the logo for the todo hive project" />

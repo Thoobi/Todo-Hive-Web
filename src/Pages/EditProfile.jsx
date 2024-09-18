@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useUser } from '../hooks/useUser';
 import axios from 'axios'
+import { ClipLoader } from 'react-spinners'
 
 const EditedProfile = () => {
     const { authToken } = useUser();
     const { userId } = useUser()
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const { handleLogout } = useUser()
     const [userProfile, setUserProfile] = useState(null)
     const [userName, setUserName] = useState(null)
@@ -24,24 +26,30 @@ const EditedProfile = () => {
 
 
     const handleFileChange = (event) => {
+        setIsSubmitting(true)
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
 
-            // Update the image preview as soon as the file is read
             reader.onload = () => {
                 const base64Image = reader.result;
-                setUserProfile(base64Image); // Show the image immediately in the UI
+                setUserProfile(base64Image);
 
-                // Now, send the base64Image to the backend to update the user's profile image
+                const formData = new FormData()
+                formData.append("image", file)
                 const updateImage = async () => {
                     try {
                         const response = await axios.patch(
-                            `https://todobackend-top5.onrender.com/api/changeImage/66e024c43de04187ad625b1e`,
-                            { avatar: base64Image } // Assuming the API expects the image as "avatar"
-                        );
-
-                        console.log("Image uploaded successfully:", response.data);
+                            `https://todobackend-top5.onrender.com/api/changeImage/${userId}`,
+                            formData, {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                                "Authorization": `Bearer ${authToken}`
+                            }
+                        }
+                        )
+                        setIsSubmitting(false)
+                        // console.log("Image uploaded successfully:", response.data);
                         setUserProfile(response.data.user.avatar); // Update the user profile with the new avatar from the response
                     } catch (error) {
                         console.error("Error uploading the image:", error);
@@ -66,12 +74,12 @@ const EditedProfile = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log(response.data);
+            // console.log(response.data);
             setUserProfile(response.data.user.avatar)
             setUserName(response.data.user.username)
-            console.log(token);
+            // console.log(token);
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
     useEffect(() => {
@@ -107,7 +115,8 @@ const EditedProfile = () => {
                         <label className="text-[17px] font-medium mb-[15px]">Email</label>
                         <div className="flex p-[12px] justify-between items-center rounded-lg w-full max-md:h-[55px] border-2 border-gray-400">
                             <input placeholder="johnwick@gmail.com" className="flex flex-1 p-[10px] outline-none caret-red-700 " />
-                            <CiEdit size={24} />
+                            {isSubmitting ? <CiEdit size={24} /> : <ClipLoader color='white' size={15} />}
+
                         </div>
                     </div>
 

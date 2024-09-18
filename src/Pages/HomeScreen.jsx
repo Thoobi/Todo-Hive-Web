@@ -15,9 +15,12 @@ import { toast } from 'react-toastify';
 const HomeScreen = () => {
     const [checkedTaskId, setCheckedTaskId] = useState(false);
     const [taskData, setTaskData] = useState([])
+    const [work, setWork] = useState(0)
+    const [school, setSchool] = useState(0)
+    const [other, setOther] = useState(0)
     const [userName, setUserName] = useState(null)
     const [userProfile, setUserProfile] = useState("")
-    const [completed, setCompleted] = useState(null)
+    const { setCompleted } = useState(false)
     const { userId } = useUser();
     const { authToken } = useUser();
 
@@ -25,21 +28,20 @@ const HomeScreen = () => {
     const handleTaskClick = async (id) => {
         const taskId = id;
         setCheckedTaskId(taskId);
-
         try {
             const res = await axios.patch(`https://todobackend-top5.onrender.com/api/updateCompletedTask/${userId}/${taskId}`)
             console.log(res);
             const completed = res.data.task.completed;
             setCompleted(completed);
+            console.log(completed);
 
             if (completed) {
                 const deleteRes = await axios.delete(`https://todobackend-top5.onrender.com/api/deleteTask/${userId}/${taskId}`)
                 toast.success(deleteRes.data);
-
                 // Log message after the toast
                 setTimeout(() => {
                     console.log("Task deleted:", deleteRes.data);
-                }, 3000);
+                }, 1000);
             }
         } catch (err) {
             console.error("Error updating or deleting the task:", err);
@@ -53,13 +55,11 @@ const HomeScreen = () => {
                 console.log(res);
                 setTimeout(() => {
                     location.reload()
-                }, 1000)
+                }, 500)
             })
             .catch(err => {
                 console.log(err);
             })
-        console.log(taskId);
-        console.log(userId);
     }
 
     const fetchUser = async () => {
@@ -70,10 +70,56 @@ const HomeScreen = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log(response.data);
             setUserName(response.data.user.username)
             setUserProfile(response.data.user.avatar)
-            console.log(token);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchWorkCategory = async () => {
+        const token = authToken
+        try {
+            const response = await axios.get(`https://todobackend-top5.onrender.com/api/get-user-taskCategoryId/${userId}/Work`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            setWork(response.data.tasks.length)
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchEducationCategory = async () => {
+        const token = authToken
+        try {
+            const response = await axios.get(`https://todobackend-top5.onrender.com/api/get-user-taskCategoryId/${userId}/Education`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            setSchool(response.data.tasks.length)
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const fetchOtherCategory = async () => {
+        const token = authToken
+        try {
+            const response = await axios.get(`https://todobackend-top5.onrender.com/api/get-user-taskCategoryId/${userId}/Others`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            setOther(response.data.tasks.length)
+
         } catch (error) {
             console.log(error);
         }
@@ -83,7 +129,6 @@ const HomeScreen = () => {
         try {
             axios.get(`https://todobackend-top5.onrender.com/api/get-user-taskbyuserId/${userId}`)
                 .then(res => {
-                    console.log(res);
                     const tasks = res.data.tasks; // Access tasks
                     setTaskData(tasks);
                 })
@@ -96,6 +141,9 @@ const HomeScreen = () => {
         if (userId) {
             fetchTasks();
             fetchUser();
+            fetchWorkCategory();
+            fetchEducationCategory();
+            fetchOtherCategory();
             handleDelete
         }
     }, [userId]);
@@ -132,7 +180,7 @@ const HomeScreen = () => {
                         </div>
                         <div className='flex flex-row w-full justify-between'>
                             <h2 className='text-2xl font-bold max-md:text-xl'>Work</h2>
-                            <h2 className='text-2xl font-bold max-md:text-lg'>0</h2>
+                            <h2 className='text-2xl font-bold max-md:text-lg'>{work}</h2>
                         </div>
                     </div>
                     <div className='h-[180px] max-md:h-[90px] max-lg:h-[130px]  bg-[#9747FF] bg-opacity-[60%] text-center rounded-xl p-4 flex justify-center items-start flex-col gap-6 max-md:gap-3'>
@@ -140,8 +188,8 @@ const HomeScreen = () => {
                             <GoTasklist className='size-[20px] max-md:size-5' />
                         </div>
                         <div className='flex flex-row w-full justify-between'>
-                            <h2 className='text-2xl font-bold max-md:text-xl'>School</h2>
-                            <h2 className='text-2xl font-bold max-md:text-lg'>0</h2>
+                            <h2 className='text-2xl font-bold max-md:text-xl'>Education</h2>
+                            <h2 className='text-2xl font-bold max-md:text-lg'>{school}</h2>
                         </div>
                     </div>
                     <div className='h-[180px] max-md:h-[90px] max-lg:h-[130px]  bg-[#EDBE7D] bg-opacity-[60%] text-center rounded-xl p-5 flex justify-center items-start flex-col gap-6 max-md:gap-3'>
@@ -149,8 +197,8 @@ const HomeScreen = () => {
                             <MdOutlineLocalGroceryStore className='size-[20px]' />
                         </div>
                         <div className='flex flex-row w-full justify-between'>
-                            <h2 className='text-2xl font-bold max-md:text-xl'>Groceries</h2>
-                            <h2 className='text-2xl font-bold max-md:text-lg'>0</h2>
+                            <h2 className='text-2xl font-bold max-md:text-xl'>Others</h2>
+                            <h2 className='text-2xl font-bold max-md:text-lg'>{other}</h2>
                         </div>
                     </div>
                 </div>
@@ -181,10 +229,10 @@ const HomeScreen = () => {
                                         )}
                                     </span>
                                     <div className='w-[50%] max-md:w-[50%] flex flex-col justify-center'>
-                                        <h1 className='text-2xl font-semibold max-md:text-xl'>
+                                        <h1 className='text-2xl font-semibold max-md:text-xl max-md:overflow-hidden whitespace-nowrap overflow-hidden text-ellipsis'>
                                             {item.title}
                                         </h1>
-                                        <p className='text-lg font-bold text-zinc-600 max-md:text-base'>
+                                        <p className='text-lg font-bold text-zinc-600 max-md:text-sm'>
                                             {item.startTime} to {item.endTime}
                                         </p>
                                     </div>

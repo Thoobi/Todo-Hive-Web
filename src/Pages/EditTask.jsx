@@ -53,7 +53,7 @@ function TaskEdit() {
         const selectedCategory = type;
         setTaskData({
             ...taskData,
-            category: selectedCategory,
+            catergory: selectedCategory,
         })
     };
 
@@ -191,7 +191,7 @@ function TaskEdit() {
                 <div className='flex flex-col gap-y-2'>
                     <label htmlFor="Category" className='text-xl font-semibold max-md:text-xl'>Category</label>
                     <div className='grid grid-cols-4 grid-rows-1 max-lg:grid-cols-2 max-lg:grid-rows-2 max-lg:gap-y-3 gap-x-10 max-md:gap-x-2 w-full'>
-                        {['Work', 'School', 'Groceries'].map((cat) => (
+                        {['Work', 'Education', 'Others'].map((cat) => (
                             <button
                                 key={cat}
                                 type="button"

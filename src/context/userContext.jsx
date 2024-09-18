@@ -83,7 +83,6 @@ const UserProvider = ({ children }) => {
                     .then(res => {
                         setLoading(false);
                         const { token } = res.data;
-                        console.log(res);
                         // Store token and userId in localStorage
                         localStorage.setItem("authToken", token);
                         setAuthToken(token);
@@ -94,10 +93,11 @@ const UserProvider = ({ children }) => {
                         // Store userId
                         localStorage.setItem("userId", userId);
                         setUserId(userId);
+                        console.log(userId);
 
                         setMessage(res.data.message);
 
-                        console.log("Logged in user ID:", userId);
+                        // console.log("Logged in user ID:", userId);
                         // Show success message and redirect
                         setTimeout(() => {
                             navigate("/HomeScreen");
@@ -125,7 +125,7 @@ const UserProvider = ({ children }) => {
         setUserId(null);
         setAuthToken(null);
         setUserProfile(null);
-        console.log("Logged out successfully!");
+        // console.log("Logged out successfully!");
     };
 
     const value = {

@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import logo2 from '../assets/logo2.svg'
 import { IoMdArrowBack } from "react-icons/io"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useUser } from '../hooks/useUser';
-import axios from 'axios'
+import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CreateTask = () => {
     const { userId } = useUser();
-    // const { userToken } = useUser();
+    const navigate = useNavigate()
     const [taskData, setTaskData] = useState({
         title: "",
         catergory: "",
@@ -35,9 +37,7 @@ const CreateTask = () => {
             ...prevTask,
             startTime: value,
         }));
-
     }
-    console.log(taskData.startTime);
 
     const handleEndTime = (e) => {
         e.preventDefault()
@@ -47,9 +47,6 @@ const CreateTask = () => {
             endTime: value,
         }));
     }
-
-    console.log(taskData.endTime);
-    console.log(taskData.date);
 
     const formatTimeWithAmPm = (time) => {
         let [hours, minutes] = time.split(':').map(Number);
@@ -93,7 +90,6 @@ const CreateTask = () => {
         description: taskData.description,
         priority: taskData.priority
     }
-    console.log(finalData);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -106,8 +102,8 @@ const CreateTask = () => {
             axios.post(`https://todobackend-top5.onrender.com/api/createTask/${userId}`, formattedTaskData, {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-            });
+                }
+            })
         } catch (error) {
             console.log(error.data.message);
         }
@@ -119,16 +115,17 @@ const CreateTask = () => {
             endTime: "",
             priority: "",
             description: "",
-
         })
-        console.log(formattedTaskData);
-        console.log(finalData);
+        toast.success("Task created")
+        setTimeout(() => {
+            navigate("/homescreen")
+        }, 1000)
     }
 
     return (
         <div className='w-[90%] max-md:w-[95%] mx-auto font-urbanist my-5'>
             <img src={logo2} alt="" className='absolute top-0 left-0 h-[150px] z-0 max-md:h-[84.5px]' />
-
+            <ToastContainer position='top-right' className="font-urbanist text-black" />
             <Link to={"/Homescreen"}>
                 <IoMdArrowBack className="absolute top-6 left-10  max-md:left-7 size-7 max-md:size-6" />
             </Link>
@@ -152,7 +149,7 @@ const CreateTask = () => {
                     <label htmlFor="Category" className='text-xl font-semibold max-md:text-xl pb-2'>Category</label>
                     <div className='grid grid-cols-3 grid-rows-1 max-lg:grid-cols-3 max-l:grid-cols-1 max-md:grid-cols-2 max-md:grid-rows-2 max-lg:gap-y-2 gap-x-10 max-lg:gap-x-6 max-md:gap-x-2 w-full'>
 
-                        {['Work', 'School', 'Groceries'].map((cat) => (
+                        {['Work', 'Education', 'Others'].map((cat) => (
                             <button
                                 key={cat}
                                 type="button"
