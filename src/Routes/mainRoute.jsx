@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/layout/Layout"
-import WelcomeScreen from '../Pages/welcomescreen'
+import WelcomeScreen from "../Pages/welcomescreen"
 import NotFoundPage from "../Pages/Error/NotFoundPage"
 import Loginscreen from "../Pages/Loginscreen"
 import Signupscreen from "../Pages/SignupScreen"
