@@ -23,8 +23,6 @@ const EditedProfile = () => {
     };
 
 
-
-
     const handleFileChange = (event) => {
         setIsSubmitting(true)
         const file = event.target.files[0];
@@ -63,7 +61,6 @@ const EditedProfile = () => {
             // Read the file as a Data URL (Base64) to update the preview and later send it to the server
             reader.readAsDataURL(file);
         }
-
     };
 
     const fetchUser = async () => {

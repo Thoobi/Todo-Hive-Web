@@ -78,35 +78,29 @@ const UserProvider = ({ children }) => {
         if (finalData.email && finalData.password) {
             try {
                 setLoading(true);
-                // Make the login request
                 await axios.post('https://todobackend-top5.onrender.com/api/login', finalData)
                     .then(res => {
-                        setLoading(false);
                         const { token } = res.data;
-                        // Store token and userId in localStorage
                         localStorage.setItem("authToken", token);
+                        console.log(token);
                         setAuthToken(token);
-
                         const decodedToken = jwtDecode(token);
                         const userId = decodedToken?.id;
-
-                        // Store userId
                         localStorage.setItem("userId", userId);
                         setUserId(userId);
                         console.log(userId);
-
                         setMessage(res.data.message);
-
-                        // console.log("Logged in user ID:", userId);
-                        // Show success message and redirect
                         setTimeout(() => {
                             navigate("/HomeScreen");
                         }, 5000);
                     })
             } catch (err) {
                 if (err.response && err.response.data && err.response.data.message) {
-                    setErrorMessage(err.response.data.message); // Set error message
+                    setErrorMessage(err.response.data.message);
+
                 }
+                setLoading(false);
+
             }
         } else {
             setErrorMessage('Please provide both email and password');

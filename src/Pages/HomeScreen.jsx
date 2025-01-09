@@ -20,7 +20,7 @@ const HomeScreen = () => {
     const [other, setOther] = useState(0)
     const [userName, setUserName] = useState(null)
     const [userProfile, setUserProfile] = useState("")
-    const { setCompleted } = useState(false)
+    const [completed, setCompleted] = useState("")
     const { userId } = useUser();
     const { authToken } = useUser();
 
@@ -31,18 +31,8 @@ const HomeScreen = () => {
         try {
             const res = await axios.patch(`https://todobackend-top5.onrender.com/api/updateCompletedTask/${userId}/${taskId}`)
             console.log(res);
-            const completed = res.data.task.completed;
-            setCompleted(completed);
+            setCompleted(res.data.task.completed);
             console.log(completed);
-
-            if (completed) {
-                const deleteRes = await axios.delete(`https://todobackend-top5.onrender.com/api/deleteTask/${userId}/${taskId}`)
-                toast.success(deleteRes.data);
-                // Log message after the toast
-                setTimeout(() => {
-                    console.log("Task deleted:", deleteRes.data);
-                }, 1000);
-            }
         } catch (err) {
             console.error("Error updating or deleting the task:", err);
         }
@@ -51,12 +41,6 @@ const HomeScreen = () => {
 
     const handleDelete = (taskId) => {
         axios.delete(`https://todobackend-top5.onrender.com/api/deleteTask/${userId}/${taskId}`)
-            .then(res => {
-                console.log(res);
-                setTimeout(() => {
-                    location.reload()
-                }, 500)
-            })
             .catch(err => {
                 console.log(err);
             })
@@ -87,7 +71,6 @@ const HomeScreen = () => {
                     }
                 });
             setWork(response.data.tasks.length)
-            console.log(response);
         } catch (error) {
             console.log(error);
         }
@@ -103,7 +86,6 @@ const HomeScreen = () => {
                     }
                 });
             setSchool(response.data.tasks.length)
-            console.log(response);
         } catch (error) {
             console.log(error);
         }
@@ -144,9 +126,8 @@ const HomeScreen = () => {
             fetchWorkCategory();
             fetchEducationCategory();
             fetchOtherCategory();
-            handleDelete
         }
-    }, [userId]);
+    }, [handleDelete]);
 
     return (
         <>
