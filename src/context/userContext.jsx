@@ -93,6 +93,7 @@ const UserProvider = ({ children }) => {
                         setTimeout(() => {
                             navigate("/HomeScreen");
                         }, 5000);
+                        setLoading(false)
                     })
             } catch (err) {
                 if (err.response && err.response.data && err.response.data.message) {

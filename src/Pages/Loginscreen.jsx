@@ -41,17 +41,17 @@ const Loginscreen = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleLogin(finalData); // Call the login function from UserContext
+        handleLogin(finalData);
     };
 
     useEffect(() => {
         if (message) {
-            toast.success(message);  // Show success toast
-            clearMessage();  // Clear the message after showing
+            toast.success(message);
+            clearMessage();
         }
 
         if (errorMessage) {
-            toast.error(errorMessage);  // Show error toast
+            toast.error(errorMessage);
             clearMessage();  // Clear the error message after showing
         }
     }, [message, errorMessage, clearMessage]);
