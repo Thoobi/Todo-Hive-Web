@@ -129,6 +129,16 @@ const HomeScreen = () => {
         }
     }, [handleDelete]);
 
+    useEffect(() => {
+        if (userId) {
+            fetchTasks();
+            fetchUser();
+            fetchWorkCategory();
+            fetchEducationCategory();
+            fetchOtherCategory();
+        }
+    }, []);
+
     return (
         <>
             <div className="bg-contain w-full h-full bg-no-repeat font-urbanist">
